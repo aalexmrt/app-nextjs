@@ -1,12 +1,13 @@
 // app/layout.jsx
-// import { UserProvider } from "@auth0/nextjs-auth0/client";
+import "./globals.css";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      {/* <UserProvider> */}
-      <body>{children}</body>
-      {/* </UserProvider> */}
+      <UserProvider>
+        <body>{children}</body>
+      </UserProvider>
     </html>
   );
 }

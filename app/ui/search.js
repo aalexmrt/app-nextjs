@@ -1,14 +1,14 @@
 "use client";
 
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-// import Form from "next/form";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Form } from "@/components/ui/form";
 import { useSearchParams } from "next/navigation";
 
 export default function Search() {
   const searchParams = useSearchParams();
 
   return (
-    <form
+    <Form
       action="/search"
       className="w-max-[550px] relative w-full lg:w-80 xl:w-full"
     >
@@ -24,7 +24,7 @@ export default function Search() {
       <div className="absolute right-0 top-0 mr-3 flex h-full items-center">
         <MagnifyingGlassIcon className="h-4" />
       </div>
-    </form>
+    </Form>
   );
 }
 
