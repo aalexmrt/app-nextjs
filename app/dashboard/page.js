@@ -1,10 +1,11 @@
-import { withPageAuthRequired, getSession } from "@auth0/nextjs-auth0";
+import ChartOne from "../ui/chart-one";
+import HeaderDashboard from "../ui/header-dashboard";
 
-export default withPageAuthRequired(
-  async function Profile() {
-    const { user } = await getSession();
-    return <div>Hello {user.name}</div>;
-  },
-  { returnTo: "/" }
-);
-// You need to provide a `returnTo` since Server Components aren't aware of the page's URL
+export default function Page() {
+  return (
+    <>
+      <HeaderDashboard />
+      <ChartOne />
+    </>
+  );
+}
