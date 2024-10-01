@@ -1,14 +1,13 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import clsx from "clsx";
+import { ArrowDownRightIcon, ArrowUpLeftIcon } from "@heroicons/react/24/solid";
 
 const placeholderData = [
   {
@@ -46,9 +45,9 @@ const placeholderData = [
 ];
 export default function HeaderDashboard() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
       {placeholderData.map((item) => (
-        <Card key={item.id} x-chunk={`dashboard-05-chunk-${item.id}`}>
+        <Card key={item.id}>
           <CardHeader className="pb-2">
             <CardDescription className="font-semibold text-center">
               {item.description}
@@ -62,16 +61,24 @@ export default function HeaderDashboard() {
             <Separator className="my-4" />
             <div className="flex h-8 gap-1.5 text-xs justify-center items-center text-muted-foreground">
               <div className="flex flex-col items-center">
-                <span
-                  className={clsx(
-                    "text-base font-semibold",
-                    item.versusSign === "positive"
-                      ? "text-green-500"
-                      : "text-red-500"
+                <div className="flex gap-2 align-baseline">
+                  {item.versusSign === "positive" ? (
+                    <ArrowUpLeftIcon class="h-100 w-4 text-gray text-green-500" />
+                  ) : (
+                    <ArrowDownRightIcon class="h-100 w-4 text-gray text-red-500" />
                   )}
-                >
-                  {item.versus}
-                </span>
+
+                  <span
+                    className={clsx(
+                      "text-base font-semibold",
+                      item.versusSign === "positive"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    )}
+                  >
+                    {item.versus}
+                  </span>
+                </div>
                 <p>Versus</p>
               </div>
               <Separator orientation="vertical" className="h-full mx-4" />
