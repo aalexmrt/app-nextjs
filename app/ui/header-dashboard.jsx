@@ -63,9 +63,9 @@ export default function HeaderDashboard() {
               <div className="flex flex-col items-center">
                 <div className="flex gap-2 align-baseline">
                   {item.versusSign === "positive" ? (
-                    <ArrowUpLeftIcon class="h-100 w-4 text-gray text-green-500" />
+                    <ArrowUpLeftIcon className="h-100 w-4 text-gray text-green-500" />
                   ) : (
-                    <ArrowDownRightIcon class="h-100 w-4 text-gray text-red-500" />
+                    <ArrowDownRightIcon className="h-100 w-4 text-gray text-red-500" />
                   )}
 
                   <span
