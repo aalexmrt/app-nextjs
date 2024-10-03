@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <HeaderDashboard />
-      <div className="flex mt-8 gap-8 justify-between">
+      <div className="mt-12 grid gap-12 sm:grid-cols-1 xl:grid-cols-2">
         <ChartOne />
         <ChartTwo />
       </div>

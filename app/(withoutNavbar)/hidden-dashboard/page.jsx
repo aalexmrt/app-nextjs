@@ -4,12 +4,13 @@ import HeaderDashboard from "../../ui/header-dashboard";
 
 export default function Page() {
   return (
-    <>
+    <div className="p-20">
       <HeaderDashboard />
-      <div className="flex mt-8 gap-8 justify-between">
+      <div className="mt-8 grid gap-12 sm:grid-cols-1 xl:grid-cols-2">
         <ChartOne />
+        <div className="h-[200px]"></div>
         <ChartTwo />
       </div>
-    </>
+    </div>
   );
 }

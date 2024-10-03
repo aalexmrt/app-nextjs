@@ -55,9 +55,11 @@ const chartSetting = {
 
 export default function ChartOne() {
   return (
-    <Card className="w-[800px]">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-center">Revenue Trend</CardTitle>
+        <CardTitle className="text-center text-muted-foreground">
+          Revenue Trend
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex justify-center">
         <BarChart

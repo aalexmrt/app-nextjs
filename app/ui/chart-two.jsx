@@ -18,9 +18,11 @@ const chartSetting = {
 
 export default function ChartTwo() {
   return (
-    <Card className="w-[800px]">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-center">Active Customers</CardTitle>
+        <CardTitle className="text-center text-muted-foreground">
+          Active Customers
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex justify-center">
         <BarChart

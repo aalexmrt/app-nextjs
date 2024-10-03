@@ -45,11 +45,11 @@ const placeholderData = [
 ];
 export default function HeaderDashboard() {
   return (
-    <div className="grid gap-12 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-12 mt-12 sm:grid-cols-1 md:grid-cols-2  xl:grid-cols-4">
       {placeholderData.map((item) => (
         <Card key={item.id}>
           <CardHeader className="pb-2">
-            <CardDescription className="font-semibold text-center">
+            <CardDescription className="font-semibold text-lg text-center">
               {item.description}
             </CardDescription>
           </CardHeader>
