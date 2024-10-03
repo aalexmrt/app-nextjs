@@ -1,40 +1,32 @@
 "use client";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useSendEmail } from "@/hooks/use-send-email";
-import { useToast } from "@/hooks/use-toast";
+import { useExportPdf } from "@/hooks/use-export-pdf";
 
 import { useEffect, useState } from "react";
 
 export default function Layout({ children }) {
-  const [session, setSession] = useState(null);
-  const { sendEmail, loading, error } = useSendEmail();
-  // useEffect(() => {
-  //   const getSession = async () => {
-  //     const newSession = await getSession();
-  //     console.log(newSession);
-  //     setSession(newSession);
-  //   };
-  //   getSession();
-  // }, []);
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const { sendEmail, loading: sendEmailLoading } = useSendEmail();
+  const { exportPdf, loading: exportLoading } = useExportPdf();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (sendEmailLoading || exportLoading) {
+      setLoading(true);
+      return;
+    }
+    setLoading(false);
+  }, [sendEmailLoading, exportLoading]);
 
   const sendEmailMutation = async () => {
-    try {
-      await sendEmail(
-        "alexmartinez.mm98@gmail.com",
-        "dashboard/hidden-dashboard"
-      );
-      toast({
-        description: "Your message has been sent.",
-        variant: "success",
-      });
-    } catch (error) {
-      toast({
-        description: "An error occurred while sending the email.",
-        variant: "destructive",
-      });
-    }
+    await sendEmail(user.email, "hidden-dashboard");
+  };
+
+  const exportPdfMutation = async () => {
+    await exportPdf("hidden-dashboard");
   };
 
   return (
@@ -47,9 +39,9 @@ export default function Layout({ children }) {
               <Spinner />
             </div>
           )}
-          {/* <Button disabled={loading} onClick={() => exportPdf({ setLoading })}>
+          <Button disabled={loading} onClick={exportPdfMutation}>
             Export
-          </Button> */}
+          </Button>
           <Button disabled={loading} onClick={sendEmailMutation}>
             Send
           </Button>
