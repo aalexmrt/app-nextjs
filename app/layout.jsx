@@ -1,4 +1,3 @@
-// app/layout.jsx
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import "./globals.css";

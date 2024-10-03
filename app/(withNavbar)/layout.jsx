@@ -47,7 +47,7 @@ export default function Layout({ children }) {
           </Button>
         </div>
       </div>
-      {children}
+      <div className="px-20">{children}</div>
     </>
   );
 }

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
+import { withMiddlewareAuthRequired } from "@auth0/nextjs-auth0/edge";
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request) {
-  return NextResponse.redirect(new URL("/dashboard", request.url));
+// export default withMiddlewareAuthRequired(async function middleware(request) {
+//   return NextResponse.next();
+// });
+
+export default async function middleware(request) {
+  return NextResponse.next();
 }
-
-export const config = {
-  matcher: "/",
-};

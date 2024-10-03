@@ -1,6 +1,6 @@
-import ChartOne from "../../ui/chart-one";
-import ChartTwo from "../../ui/chart-two";
-import HeaderDashboard from "../../ui/header-dashboard";
+import ChartOne from "@/app/ui/chart-one";
+import ChartTwo from "@/app/ui/chart-two";
+import HeaderDashboard from "@/app/ui/header-dashboard";
 
 export default function Page() {
   return (
