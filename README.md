@@ -6,7 +6,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - Export dashboard via email using users email, I don’t know if use prefect or something easier for now ✅
 - Make a demo ✅
 
-## Progress demos
+## Demo videos
 
 - [Full Stack Project Demo 1: Data Insights with Next.js & Express.js](https://youtu.be/JEnelwrP3Nw) 
 
