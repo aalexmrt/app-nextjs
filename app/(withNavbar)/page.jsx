@@ -1,5 +1,5 @@
-import ChartOne from "../ui/chart-one";
-import ChartTwo from "../ui/chart-two";
+import ChartOne from "../ui/revenue-trend-chart";
+import ChartTwo from "../ui/active-customers-chart";
 import HeaderDashboard from "../ui/header-dashboard";
 
 export default function Page() {
