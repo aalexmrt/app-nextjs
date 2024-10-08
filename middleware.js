@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { withMiddlewareAuthRequired } from "@auth0/nextjs-auth0/edge";
 import * as jose from "jose";
+
 export default async function middleware(request) {
   const { pathname } = request.nextUrl;
 
@@ -16,13 +17,9 @@ export default async function middleware(request) {
       await jose.jwtVerify(token.replace("Bearer ", ""), jwks);
       return NextResponse.next();
     } catch (e) {
-      return new NextResponse(
-        JSON.stringify({
-          success: false,
-          message: "Authentication failed: Token could not be verified",
-        }),
-        { status: 401, headers: { "content-type": "application/json" } }
-      );
+      const url = request.nextUrl;
+      url.pathname = `/404`;
+      return NextResponse.rewrite(url);
     }
   }
 
