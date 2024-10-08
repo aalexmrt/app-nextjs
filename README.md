@@ -2,15 +2,21 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Work done
 
+### Phase 1
+
 - Build the main dashboard to display faked data insights ✅
 - Export dashboard via email using users email, I don’t know if use prefect or something easier for now ✅
 - Record the demo video ✅
+
+### Phase 2
 
 - Protect all routes with auth0 ✅
 - Add custom authentication to specific route to allow the backend server to access and get the dashboard ✅
 - Connect app next js with strapi server to get the data to display in the dashboard ✅
 - Protect requests against strapi
 - Record the demo video ✅
+
+### Phase 3
 
 - Dockerize the project
 
