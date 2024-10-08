@@ -13,7 +13,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - Protect all routes with auth0 ✅
 - Add custom authentication to specific route to allow the backend server to access and get the dashboard ✅
 - Connect app next js with strapi server to get the data to display in the dashboard ✅
-- Protect requests against strapi
+- Protect requests against strapi ✅
 - Record the demo video 
 
 ### Phase 3
