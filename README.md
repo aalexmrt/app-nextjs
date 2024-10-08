@@ -14,7 +14,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - Add custom authentication to specific route to allow the backend server to access and get the dashboard ✅
 - Connect app next js with strapi server to get the data to display in the dashboard ✅
 - Protect requests against strapi
-- Record the demo video ✅
+- Record the demo video 
 
 ### Phase 3
 
