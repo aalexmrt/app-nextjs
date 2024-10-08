@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { getRevenueTrendChart } from "@/services/strapi";
 
 import { BarChart } from "@mui/x-charts/BarChart";
 
@@ -7,12 +8,8 @@ const chartSetting = {
   height: 300,
 };
 
-const CHART_NAME = "Revenue Trend";
 export default async function RevenueTrendChart() {
-  const response = await fetch(
-    `${process.env.STRAPI_URL}/data-charts?filters[name]=${CHART_NAME}`
-  );
-  const dataChartData = await response.json();
+  const dataChartData = await getRevenueTrendChart();
   const [dataChart] = dataChartData.data;
 
   return (

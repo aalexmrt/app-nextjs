@@ -8,10 +8,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import clsx from "clsx";
 import { ArrowDownRightIcon, ArrowUpLeftIcon } from "@heroicons/react/24/solid";
+import { getKeyMetrics } from "@/services/strapi";
 
 export default async function HeaderDashboard() {
-  const data = await fetch("http://localhost:1337/api/key-metrics");
-  const keyMetricsData = await data.json();
+  const keyMetricsData = await getKeyMetrics();
   const keyMetrics = keyMetricsData.data;
 
   return (
