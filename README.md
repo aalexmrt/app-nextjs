@@ -19,7 +19,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### Phase 3
 
 - Dockerize the project
-
 - Deploy on local kubernetes
 
 
