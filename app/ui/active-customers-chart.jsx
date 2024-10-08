@@ -9,7 +9,7 @@ const chartSetting = {
 const CHART_NAME = "Active Customers";
 export default async function ActiveCustomersChart() {
   const response = await fetch(
-    `http://localhost:1337/api/data-charts?filters[name]=${CHART_NAME}`
+    `${process.env.STRAPI_URL}/data-charts?filters[name]=${CHART_NAME}`
   );
   const dataChartData = await response.json();
   const [dataChart] = dataChartData.data;
