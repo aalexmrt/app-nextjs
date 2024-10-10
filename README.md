@@ -1,3 +1,6 @@
+🚧 Work in Progress 🚧
+This project is still in progress. Features and functionality might change as updates are made, so expect adjustments in future phases.
+
 ## Work Summary
 
 ### Phase 1
@@ -25,7 +28,5 @@
 - [Full Stack Project Demo 1: Data Insights with Next.js & Express.js](https://youtu.be/JEnelwrP3Nw) 
 - [Full Stack Project Demo 2: Securing the App with Auth0 & Setting Up Strapi](https://youtu.be/cIJN_rT6u-s)
 
-## Instructions
 
-#### TODO
 
