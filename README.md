@@ -23,6 +23,7 @@
 ## Demo videos
 
 - [Full Stack Project Demo 1: Data Insights with Next.js & Express.js](https://youtu.be/JEnelwrP3Nw) 
+- [Full Stack Project Demo 2: Securing the App with Auth0 & Setting Up Strapi](https://youtu.be/cIJN_rT6u-s)
 
 ## Instructions
 
