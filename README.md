@@ -1,4 +1,4 @@
-🚧 Work in Progress 🚧
+🚧 **Work in Progress** 🚧
 
 This project is still in progress. Features and functionality might change as updates are made, so expect adjustments in future phases.
 
