@@ -23,6 +23,14 @@ This project is still in progress. Features and functionality might change as up
 - Dockerize the project
 - Deploy on local kubernetes
 
+### Backlog
+
+ - Get notified via slack when new users sign up to the app
+ - Implement some kind of RBAC to differentiate between users
+ - Save secrets in a secret manager
+ - Implement a global state management solution
+ - Deploy online
+
 
 ## Demo Videos
 
