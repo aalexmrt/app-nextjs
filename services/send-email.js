@@ -3,7 +3,7 @@ async function sendEmailAPI(email, dashboardUrl) {
     method: "POST",
     body: JSON.stringify({
       email,
-      dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/${dashboardUrl}`,
+      dashboardUrl,
     }),
     headers: {
       "Content-Type": "application/json",

@@ -4,7 +4,7 @@ async function exportPdfAPI(dashboardUrl) {
     {
       method: "POST",
       body: JSON.stringify({
-        dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/${dashboardUrl}`,
+        dashboardUrl,
       }),
       headers: {
         "Content-Type": "application/json",
