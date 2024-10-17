@@ -4,21 +4,12 @@ services:
     container_name: app-nextjs
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
       - .:/app
-    environment:
-      - STRAPI_URL=http://strapi:1337/api
-      - BACKEND_EXPRESS_URL=http://express-backend:3001
-      - APP_URL=http://app-nextjs:3000
-      - NEXT_PUBLIC_BACKEND_EXPRESS_URL=http://localhost:3001
-
-      - STRAPI_TOKEN=<STRAPI_TOKEN>
-
-    env_file: ".env.local"
-    command: npm run dev
+    env_file: ".env.development"
     networks:
       - app-network
 
@@ -27,20 +18,16 @@ services:
   express-backend:
     container_name: express-backend
     build:
-      context: ../express-backend
-      dockerfile: Dockerfile
+      context: ../express-backend/
+      dockerfile: Dockerfile.dev
     ports:
       - "3001:3001"
     volumes:
-      - ../express-backend:/app
-    environment:
-      - APP_URL=http://app-nextjs:3000
-      - PORT=3001
-    env_file: "../express-backend/.env.local"
+      - ../express-backend:/express-backend
+    env_file: "../express-backend/.env.development"
     networks:
       - app-network
     restart: on-failure
-    command: npm run start:dev
 
 
   strapi:
@@ -50,15 +37,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "1337:1337"
-    env_file: "../strapi_cms/.env"
+    env_file: "../strapi_cms/.env.development"
     restart: unless-stopped
-    environment:
-      - DATABASE_NAME=strapi
-      - DATABASE_HOST=strapi_db
-      - DATABASE_PORT=5432
-      - DATABASE_USERNAME=strapi
-      - DATABASE_PASSWORD=strapi
-
     networks:
       - app-network
       - strapi
@@ -71,7 +51,6 @@ services:
       - ../strapi_cms/package-lock.json:/opt/package-lock.json
       - ../strapi_cms/.env:/opt/app/.env
       - ../strapi_cms/public/uploads:/opt/app/public/uploads
-    command: npm run develop
 
 
   strapi_db:
