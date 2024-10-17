@@ -1,0 +1,91 @@
+services:
+
+  app-nextjs:
+    container_name: app-nextjs
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    environment:
+      - NEXT_PUBLIC_STRAPI_URL=http://strapi:1337
+      - NEXT_PUBLIC_BACKEND_EXPRESS_URL=http://express-backend:3001
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    env_file: ".env.local"
+    command: npm run dev
+    networks:
+      - app-network
+
+
+
+  express-backend:
+    container_name: express-backend
+    build:
+      context: ../express-backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXTJS_APP_URL=http://app-nextjs:3000
+      - PORT=3001
+    env_file: "../express-backend/.env.local"
+    networks:
+      - app-network
+    command: npm start
+  strapi:
+    container_name: strapi
+    build:
+      context: ../strapi_cms
+      dockerfile: Dockerfile
+    ports:
+      - "1337:1337"
+    env_file: "../strapi_cms/.env"
+    restart: unless-stopped
+    environment:
+      - DATABASE_NAME=strapi
+      - DATABASE_HOST=strapi_db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=strapi
+      - DATABASE_PASSWORD=strapi
+    networks:
+      - app-network
+      - strapi
+    depends_on:
+      - strapi_db
+    volumes:
+      - ../strapi_cms/config:/opt/app/config
+      - ../strapi_cms/src:/opt/app/src
+      - ../strapi_cms/package.json:/opt/package.json
+      - ../strapi_cms/package-lock.json:/opt/package-lock.json
+      - ../strapi_cms/.env:/opt/app/.env
+      - ../strapi_cms/public/uploads:/opt/app/public/uploads
+    command: npm run develop
+
+
+  strapi_db:
+    container_name: strapi_db
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=strapi
+      - POSTGRES_PASSWORD=strapi
+      - POSTGRES_DB=strapi
+    volumes:
+      - ../strapi_cms/data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - strapi
+    
+
+volumes:
+  strapi-data:
+
+networks:
+  app-network:
+    driver: bridge
+  strapi:
+    name: Strapi
+    driver: bridge
