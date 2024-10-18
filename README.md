@@ -27,7 +27,7 @@ This project is using the following repositories:
 
 ### Phase 3
 
-- Dockerize the project ✅
+- Set up docker compose ✅
 - Record demo video
 
 ### Phase 4
