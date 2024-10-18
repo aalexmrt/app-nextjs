@@ -11,14 +11,19 @@ const useExportPdf = () => {
   const exportPdf = async (dashboardUrl) => {
     try {
       setLoading(true);
-      const response = await exportPdfAPI(dashboardUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      const pdfArrayBuffer = await exportPdfAPI(dashboardUrl); // This must be using responseType: 'arraybuffer'
+
+      const pdfBlob = new Blob([new Uint8Array(pdfArrayBuffer)], {
+        type: "application/pdf",
+      });
+
+      const url = window.URL.createObjectURL(pdfBlob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "dashboard.pdf");
       document.body.appendChild(link);
       link.click();
+
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {

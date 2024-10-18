@@ -1,5 +1,5 @@
 async function sendEmailAPI(email, dashboardUrl) {
-  await fetch(`${process.env.NEXT_PUBLIC_BACKEND_EXPRESS_URL}/send-email`, {
+  await fetch(`${process.env.BACKEND_EXPRESS_URL}/send-email`, {
     method: "POST",
     body: JSON.stringify({
       email,
