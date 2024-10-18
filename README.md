@@ -28,7 +28,10 @@ This project is using the following repositories:
 ### Phase 3
 
 - Dockerize the project
-- Deploy on local kubernetes
+
+### Phase 4
+
+
 
 ### Backlog
 
@@ -37,6 +40,8 @@ This project is using the following repositories:
  - Save secrets in a secret manager
  - Implement a global state management solution
  - Deploy online
+ - Deploy on local kubernetes
+
 
 
 ## Demo Videos
