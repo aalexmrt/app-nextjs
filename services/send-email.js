@@ -1,13 +1,10 @@
+"use server";
+import axios from "axios";
+
 async function sendEmailAPI(email, dashboardUrl) {
-  await fetch(`${process.env.BACKEND_EXPRESS_URL}/send-email`, {
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      dashboardUrl,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+  await axios.post(`${process.env.BACKEND_EXPRESS_URL}/send-email`, {
+    email,
+    dashboardUrl,
   });
 }
 
