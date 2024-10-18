@@ -27,11 +27,12 @@ This project is using the following repositories:
 
 ### Phase 3
 
-- Dockerize the project
+- Dockerize the project ✅
+- Record demo video
 
 ### Phase 4
 
-
+- TODO
 
 ### Backlog
 
