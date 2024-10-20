@@ -77,4 +77,4 @@ networks:
     driver: bridge
   strapi:
     name: Strapi
-    driver: bridge
+    driver: none
