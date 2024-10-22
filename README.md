@@ -49,6 +49,7 @@ This project is using the following repositories:
 
 - [Full Stack Project Demo 1: Data Insights with Next.js & Express.js](https://youtu.be/JEnelwrP3Nw) 
 - [Full Stack Project Demo 2: Securing the App with Auth0 & Setting Up Strapi](https://youtu.be/cIJN_rT6u-s)
+- [Full Stack Project Demo 3: Containerizing with Docker](https://youtu.be/WAIdaEKdeAw?si=gzEl_XqJvbP5Kwkm)
 
 
 
