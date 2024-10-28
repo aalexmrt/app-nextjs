@@ -1,0 +1,32 @@
+[
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "taxIdentificationNumber": "123456789"
+  },
+  {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "taxIdentificationNumber": "987654321"
+  },
+  {
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "taxIdentificationNumber": "111111111"
+  },
+  {
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "taxIdentificationNumber": "222222222"
+  },
+  {
+    "name": "Charlie Brown",
+    "email": "charlie.brown@example.com",
+    "taxIdentificationNumber": "333333333"
+  },
+  {
+    "name": "David Williams",
+    "email": "david.williams@example.com",
+    "taxIdentificationNumber": "444444444"
+  }
+]

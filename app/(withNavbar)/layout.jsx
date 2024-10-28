@@ -6,6 +6,11 @@ import { useSendEmail } from "@/hooks/use-send-email";
 import { useExportPdf } from "@/hooks/use-export-pdf";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
+const exportPdfMutation = async (id) => {
+  await exportPdf(`hidden-invoice/${id}`);
+};
 
 export default function Layout({ children }) {
   const [loading, setLoading] = useState(false);
@@ -22,17 +27,15 @@ export default function Layout({ children }) {
   }, [sendEmailLoading, exportLoading]);
 
   const sendEmailMutation = async () => {
-    await sendEmail(user.email, "hidden-dashboard");
-  };
-
-  const exportPdfMutation = async () => {
-    await exportPdf("hidden-dashboard");
+    await sendEmail(user.email, "hidden-invoice/zq1tjdkk9wni575cyzopeamc");
   };
 
   return (
     <>
       <div className="flex px-4 p-5 border-b mb-6 border-gray-200 items-center justify-between">
-        <h5 className="text-xl font-bold">Data Insights</h5>
+        <Link href="/">
+          <h5 className="text-xl font-bold">Invoices</h5>
+        </Link>
         <div className="flex gap-4 align-center position-relative">
           {loading && (
             <div className="flex align-center">
@@ -47,7 +50,7 @@ export default function Layout({ children }) {
           </Button>
         </div>
       </div>
-      <div className="px-20">{children}</div>
+      <div className="px-20 pb-20">{children}</div>
     </>
   );
 }
