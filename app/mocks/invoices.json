@@ -1,6 +1,7 @@
 [
   {
     "identificationNumber": "INV-001",
+    "number": 1,
     "date": "2023-07-01T00:00:00.000Z",
     "products": [
       {
@@ -19,6 +20,7 @@
   },
   {
     "identificationNumber": "INV-002",
+    "number": 2,
     "date": "2023-07-02T00:00:00.000Z",
     "products": [
       {
@@ -37,6 +39,7 @@
   },
   {
     "identificationNumber": "INV-003",
+    "number": 3,
     "date": "2023-07-03T00:00:00.000Z",
     "products": [
       {
@@ -61,6 +64,7 @@
   },
   {
     "identificationNumber": "INV-004",
+    "number": 4,
     "date": "2023-07-04T00:00:00.000Z",
     "products": [
       {
@@ -85,6 +89,7 @@
   },
   {
     "identificationNumber": "INV-005",
+    "number": 5,
     "date": "2023-07-05T00:00:00.000Z",
     "products": [
       {
@@ -103,6 +108,7 @@
   },
   {
     "identificationNumber": "INV-006",
+    "number": 6,
     "date": "2023-07-06T00:00:00.000Z",
     "products": [
       {
@@ -121,6 +127,7 @@
   },
   {
     "identificationNumber": "INV-007",
+    "number": 7,
     "date": "2023-07-07T00:00:00.000Z",
     "products": [
       {
@@ -139,6 +146,7 @@
   },
   {
     "identificationNumber": "INV-008",
+    "number": 8,
     "date": "2023-07-08T00:00:00.000Z",
     "products": [
       {

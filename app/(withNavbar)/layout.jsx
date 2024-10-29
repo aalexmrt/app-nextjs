@@ -42,12 +42,12 @@ export default function Layout({ children }) {
               <Spinner />
             </div>
           )}
-          <Button disabled={loading} onClick={exportPdfMutation}>
+          {/* <Button disabled={loading} onClick={exportPdfMutation}>
             Export
           </Button>
           <Button disabled={loading} onClick={sendEmailMutation}>
             Send
-          </Button>
+          </Button> */}
         </div>
       </div>
       <div className="px-20 pb-20">{children}</div>

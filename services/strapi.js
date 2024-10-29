@@ -26,6 +26,15 @@ const getInvoicesList = async () => {
   return response.data;
 };
 
+const getLastOrganizationInvoiceService = async (organizationDocumentId) => {
+  const response = await strapiAPI.get(
+    `/invoices?populate[organization]=true&filters[organization][documentId][$eq]=${organizationDocumentId}&sort=createdAt:desc`
+  );
+  const [invoice] = response.data.data;
+  return invoice;
+
+};
+
 const addInvoice = async (inputData) => {
   console.log(inputData);
   const payload = {
@@ -181,4 +190,5 @@ export {
   createMockedAddressAndCustomersService,
   createMockedAddressAndOrganizationService,
   updateOrganizationWithExistingCustomersService,
+  getLastOrganizationInvoiceService,
 };

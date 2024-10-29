@@ -54,7 +54,7 @@ export default async function Page() {
 
                     {/* <TableCell>{item.status}</TableCell>
                   <TableCell>{item.method}</TableCell> */}
-                    <TableCell className="text-right">{item.total}</TableCell>
+                    <TableCell className="text-right">$ {item.total}</TableCell>
                     <TableCell className="text-right">
                       <ExportPdfButton documentId={item.documentId} />
                     </TableCell>

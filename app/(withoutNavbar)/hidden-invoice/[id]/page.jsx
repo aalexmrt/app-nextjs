@@ -25,12 +25,12 @@ export default function Page() {
     <>
       <header>
         <div class="invoice-info">
-          <h2 class="title left-margin">FACTURA</h2>
+          <h2 class="title left-margin">INVOICE</h2>
           <div class="invoice-info-detail small-margins left-margin">
-            <h3>Número:</h3>
+            <h3>Number:</h3>
             <p>{invoice.identificationNumber}</p>
             <div class="break"></div>
-            <h3>Fecha:</h3>
+            <h3>Date:</h3>
             <p>{invoice.date}</p>
           </div>
         </div>
@@ -53,17 +53,17 @@ export default function Page() {
             {invoice.organization.address.city} -{" "}
             {invoice.organization.address.state}
           </p>
-          <p>CIF {invoice.organization.taxIdentificationNumber}</p>
+          <p>{invoice.organization.taxIdentificationNumber}</p>
         </div>
       </header>
       <main>
         <div class="content-box customer-data">
           <div class="invoice-info-detail item small-margins left-margin">
-            <h3>Cliente:</h3>
+            <h3>Customer:</h3>
             <p>{invoice.customer.name}</p>
           </div>
           <div class="invoice-info-detail item small-margins left-margin">
-            <h3>DOMICILIO</h3>
+            <h3>Address</h3>
             <p>
               {invoice.customer.address.street}
               {", "}
@@ -73,8 +73,8 @@ export default function Page() {
             </p>
           </div>
           <div class="invoice-info-detail item small-margins left-margin">
-            <h3>C.I.F:</h3>
-            <p>CIF {invoice.customer.taxIdentificationNumber}</p>
+            <h3>TIN:</h3>
+            <p>{invoice.customer.taxIdentificationNumber}</p>
           </div>
         </div>
 
@@ -86,11 +86,11 @@ export default function Page() {
               </tr>
               <tr class="no-border"></tr>
               <tr>
-                <th>Concepto</th>
-                <th>Bultos</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Subtotal</th>
+                <th>Product</th>
+                <th></th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
@@ -104,7 +104,7 @@ export default function Page() {
                     <td>{product.quantity || ""}</td>
                     <td>{product.price || ""}</td>
                     <td className="last-column-bold">
-                      {product.total || "- €"}
+                      {product.total ? product.total + " $" : "- $"}
                     </td>
                   </tr>
                 );
@@ -123,19 +123,19 @@ export default function Page() {
                   Total
                 </td>
                 <td class="last-column left-bold-border top-bold-border">
-                  {invoice.total} €
+                  {invoice.total} $
                 </td>
               </tr>
               <tr>
                 <td class="no-border border-top-0"></td>
                 <td class="no-border border-top-0"></td>
                 <td class="left-bold-border border-right-0 align-right border-top-0 border-bottom-0 text-red">
-                  Descuento
+                  Disccount
                 </td>
                 <td class="no-border align-right text-red border-top-0 pr-1">
                   0%
                 </td>
-                <td class="last-column left-bold-border">0,00 €</td>
+                <td class="last-column left-bold-border">0,00 $</td>
               </tr>
               <tr>
                 <td class="no-border border-top-0" colspan="2"></td>
@@ -143,20 +143,20 @@ export default function Page() {
                   class="left-bold-border align-right pr-1 border-top-0 border-bottom-0"
                   colspan="2"
                 >
-                  Base imponible
+                  Base impound
                 </td>
-                <td class="last-column left-bold-border">{invoice.total} €</td>
+                <td class="last-column left-bold-border">{invoice.total} $</td>
               </tr>
               <tr>
                 <td class="no-border border-top-0" colspan="2"></td>
                 <td class="left-bold-border border-right-0 border-top-0 border-bottom-0 align-right">
-                  I.V.A
+                  VAT
                 </td>
                 <td class="no-border align-right pr-1 border-top-0 border-bottom-0">
                   10%
                 </td>
                 <td class="last-column left-bold-border">
-                  {invoice.total * 0.1} €
+                  {invoice.total * 0.1} $
                 </td>
               </tr>
               <tr>
@@ -165,10 +165,10 @@ export default function Page() {
                   class="left-bold-border bottom-bold-border border-top-0 align-right pr-1 text-bold"
                   colspan="2"
                 >
-                  Total factura
+                  Total invoice
                 </td>
                 <td class="last-column-bold left-bold-border bottom-bold-border">
-                  {invoice.total + invoice.total * 0.1} €
+                  {invoice.total + invoice.total * 0.1} $
                 </td>
               </tr>
               <tr>
@@ -179,16 +179,13 @@ export default function Page() {
         </div>
         <div class="content-box payment-data">
           <div class="payment-info-detail item small-margins">
-            <h3>Forma de pago:</h3>
-            <p>TRANSFERENCIA BANCARIA IBAN: </p>
+            <h3>Payment method</h3>
+            <p>ACH Transfer</p>
           </div>
         </div>
       </main>
       <footer>
-        <p>RM BARCELONA</p>
-        <p>Folio 113</p>
-        <p>Hoja 469357</p>
-        <p>Inscripción 1</p>
+
       </footer>
     </>
   );
