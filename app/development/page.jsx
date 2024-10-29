@@ -15,26 +15,56 @@ import {
 } from "@/services/strapi";
 
 export default function Page() {
+  const { toast } = useToast();
   const createMockedInvoices = async () => {
-    await createMockedInvoicesService(invoicesDataJson);
+    try{
+      await createMockedInvoicesService(invoicesDataJson);
+      toast({
+        description: "Invoices created successfully",
+        variant: "success",
+      })
+    } catch (error) {
+      console.log(error);
+    }
   };
-
+  
   const createMockedAddressAndCustomers = async () => {
-    await createMockedAddressAndCustomersService(
-      addressesDataJson,
-      customersDataJson
-    );
+    try{
+      await createMockedAddressAndCustomersService(
+        addressesDataJson,
+        customersDataJson
+      );
+      toast({
+        description: "Address and customers created successfully",
+        variant: "success",
+      })
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const createMockedAddressAndOrganization = async () => {
-    await createMockedAddressAndOrganizationService(
-      organizationAddress,
-      organization
-    );
+    try{
+      await createMockedAddressAndOrganizationService(
+        organizationAddress,
+        organization
+      );
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateOrganizationWithExistingCustomers = async () => {
-    await updateOrganizationWithExistingCustomersService();
+    try{
+      await updateOrganizationWithExistingCustomersService();
+      toast({
+        description: "Organization updated successfully",
+        variant: "success",
+      })
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

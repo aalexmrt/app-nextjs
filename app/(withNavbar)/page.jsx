@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { IoAdd } from "react-icons/io5";
 
 import { getInvoicesList } from "@/services/strapi";
 import { buttonVariants } from "@/components/ui/button";
@@ -26,6 +27,7 @@ export default async function Page() {
           href="add-invoice"
           className={buttonVariants({ variant: "outline" })}
         >
+          <IoAdd className="mr-2 " />
           Add Invoice
         </Link>
       </div>
@@ -43,7 +45,7 @@ export default async function Page() {
             </TableHeader>
             <TableBody>
               {invoices &&
-                invoices.data.length > 0 &&
+                invoices.data.length > 0 ? 
                 invoices.data.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">
@@ -51,15 +53,18 @@ export default async function Page() {
                     </TableCell>
                     <TableCell>{item.date}</TableCell>
                     <TableCell>{item.customer?.name}</TableCell>
-
-                    {/* <TableCell>{item.status}</TableCell>
-                  <TableCell>{item.method}</TableCell> */}
                     <TableCell className="text-right">$ {item.total}</TableCell>
                     <TableCell className="text-right">
                       <ExportPdfButton documentId={item.documentId} />
                     </TableCell>
                   </TableRow>
-                ))}
+                )) :
+                <TableRow>
+                  <TableCell colSpan="5" className="font-medium text-center">
+                    No invoices found
+                  </TableCell>
+                </TableRow>
+              }
             </TableBody>
           </Table>
         </CardContent>
