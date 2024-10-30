@@ -14,7 +14,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { ExportPdfButton } from "../ui/button";
+import { EditInvoiceButton, ExportPdfButton } from "../ui/button";
 
 export default async function Page() {
   const invoices = await getInvoicesList();
@@ -44,8 +44,7 @@ export default async function Page() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices &&
-                invoices.data.length > 0 ? 
+              {invoices && invoices.data.length > 0 ? (
                 invoices.data.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">
@@ -54,17 +53,19 @@ export default async function Page() {
                     <TableCell>{item.date}</TableCell>
                     <TableCell>{item.customer?.name}</TableCell>
                     <TableCell className="text-right">$ {item.total}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="w-3 text-right flex gap-2 align-baseline">
                       <ExportPdfButton documentId={item.documentId} />
+                      <EditInvoiceButton documentId={item.documentId} />
                     </TableCell>
                   </TableRow>
-                )) :
+                ))
+              ) : (
                 <TableRow>
                   <TableCell colSpan="5" className="font-medium text-center">
                     No invoices found
                   </TableCell>
                 </TableRow>
-              }
+              )}
             </TableBody>
           </Table>
         </CardContent>

@@ -13,6 +13,7 @@ import {
   updateOrganizationWithExistingCustomersService,
   createMockedInvoicesService,
 } from "@/services/strapi";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Page() {
   const { toast } = useToast();

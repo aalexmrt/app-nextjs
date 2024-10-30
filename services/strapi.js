@@ -15,10 +15,23 @@ const getOrganization = async () => {
 };
 
 const getInvoice = async (id) => {
+  console.log(id, "this is the id");
   const response = await strapiAPI.get(
     `/invoices/${id}?populate[organization][populate]=*&populate[customer][populate]=*`
   );
+  console.log(response, "this is the response");
   return response.data.data;
+};
+
+const updateInvoice = async (documentId, inputData) => {
+  const payload = {
+    data: inputData,
+  };
+  const response = await strapiAPI.put(`/invoices/${documentId}`, payload, {
+    headers: { "Content-Type": "application/json" },
+  });
+
+  return response.data;
 };
 
 const getInvoicesList = async () => {
@@ -32,7 +45,6 @@ const getLastOrganizationInvoiceService = async (organizationDocumentId) => {
   );
   const [invoice] = response.data.data;
   return invoice;
-
 };
 
 const addInvoice = async (inputData) => {
@@ -183,6 +195,7 @@ export {
   getActiveCustomersChart,
   getKeyMetrics,
   addInvoice,
+  updateInvoice,
   getInvoicesList,
   getInvoice,
   getOrganizationCustomers,
