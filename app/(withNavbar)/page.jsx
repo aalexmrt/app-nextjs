@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { IoAdd } from "react-icons/io5";
 
-import { getInvoicesList } from "@/services/strapi";
+import { getInvoicesList, getOrganization } from "@/services/strapi";
 import { buttonVariants } from "@/components/ui/button";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,7 +17,8 @@ import Link from "next/link";
 import { EditInvoiceButton, ExportPdfButton } from "../ui/button";
 
 export default async function Page() {
-  const invoices = await getInvoicesList();
+  const organization = await getOrganization();
+  const invoices = await getInvoicesList(organization.documentId);
 
   return (
     <>

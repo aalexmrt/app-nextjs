@@ -34,8 +34,10 @@ const updateInvoice = async (documentId, inputData) => {
   return response.data;
 };
 
-const getInvoicesList = async () => {
-  const response = await strapiAPI.get("/invoices?populate=customer");
+const getInvoicesList = async (organizationDocumentId) => {
+  const response = await strapiAPI.get(
+    `/invoices?populate=customer&populate=organization&filters[organization][documentId][$eq]=${organizationDocumentId}&sort=createdAt:desc`
+  );
   return response.data;
 };
 
