@@ -1,35 +1,19 @@
-"use client";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { useSendEmail } from "@/hooks/use-send-email";
-import { useExportPdf } from "@/hooks/use-export-pdf";
+import { getSession } from "@auth0/nextjs-auth0";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenu,
+} from "@/components/ui/dropdown-menu";
 
-const exportPdfMutation = async (id) => {
-  await exportPdf(`hidden-invoice/${id}`);
-};
+import { LogOut } from "lucide-react";
 
-export default function Layout({ children }) {
-  const [loading, setLoading] = useState(false);
-  const { sendEmail, loading: sendEmailLoading } = useSendEmail();
-  const { exportPdf, loading: exportLoading } = useExportPdf();
-  const { user } = useUser();
-
-  useEffect(() => {
-    if (sendEmailLoading || exportLoading) {
-      setLoading(true);
-      return;
-    }
-    setLoading(false);
-  }, [sendEmailLoading, exportLoading]);
-
-  const sendEmailMutation = async () => {
-    await sendEmail(user.email, "hidden-invoice/zq1tjdkk9wni575cyzopeamc");
-  };
-
+export default async function Layout({ children }) {
+  const session = await getSession();
+  console.log(session);
   return (
     <>
       <div className="flex px-4 p-5 border-b mb-6 border-gray-200 items-center justify-between">
@@ -37,17 +21,23 @@ export default function Layout({ children }) {
           <h5 className="text-xl font-bold">Invoices</h5>
         </Link>
         <div className="flex gap-4 align-center position-relative">
-          {loading && (
-            <div className="flex align-center">
-              <Spinner />
-            </div>
-          )}
-          {/* <Button disabled={loading} onClick={exportPdfMutation}>
-            Export
-          </Button>
-          <Button disabled={loading} onClick={sendEmailMutation}>
-            Send
-          </Button> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage src={session?.user?.picture} />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-46 mr-2">
+              <a href="/api/auth/logout">
+                <DropdownMenuItem>
+                  <LogOut className="mr-2" />
+
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </a>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="px-20 pb-20">{children}</div>

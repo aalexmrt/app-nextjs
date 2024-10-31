@@ -20,11 +20,9 @@ export default async function middleware(request) {
       await jose.jwtVerify(token.replace("Bearer ", ""), jwks);
       return NextResponse.next();
     } catch (e) {
-      return NextResponse.next();
-
-      // const url = request.nextUrl;
-      // url.pathname = `/404`;
-      // return NextResponse.rewrite(url);
+      const url = request.nextUrl;
+      url.pathname = `/404`;
+      return NextResponse.rewrite(url);
     }
   }
 
