@@ -6,7 +6,10 @@ export default async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Bypass authentication for Puppeteer-specific routes
-  if (pathname.startsWith("/hidden-dashboard")) {
+  if (
+    pathname.startsWith("/hidden-dashboard") ||
+    pathname.startsWith("/hidden-invoice")
+  ) {
     const token = request.headers.get("Authorization");
 
     // Check with auth0 that the token provided is valid with jose

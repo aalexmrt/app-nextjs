@@ -1,0 +1,44 @@
+[
+  {
+    "street": "123 Main Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10001",
+    "country": "USA"
+  },
+  {
+    "street": "456 Main Street",
+    "city": "Los Angeles",
+    "state": "CA",
+    "postalCode": "90001",
+    "country": "USA"
+  },
+  {
+    "street": "789 Main Street",
+    "city": "Chicago",
+    "state": "IL",
+    "postalCode": "60601",
+    "country": "USA"
+  },
+  {
+    "street": "321 Main Street",
+    "city": "London",
+    "state": "UK",
+    "postalCode": "W1A 1AA",
+    "country": "UK"
+  },
+  {
+    "street": "654 Main Street",
+    "city": "Paris",
+    "state": "FR",
+    "postalCode": "75001",
+    "country": "FR"
+  },
+  {
+    "street": "987 Main Street",
+    "city": "Tokyo",
+    "state": "JP",
+    "postalCode": "10101",
+    "country": "JP"
+  }
+]

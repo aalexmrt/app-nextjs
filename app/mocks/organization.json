@@ -1,0 +1,7 @@
+[
+  {
+    "name": "Acme Inc.",
+    "taxIdentificationNumber": "123456789",
+    "invoicePrefix": "INV"
+  }
+]
