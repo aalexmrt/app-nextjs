@@ -188,7 +188,9 @@ export const InvoiceForm = ({
             ))}
             <div className="flex pt-6 w-full justify-end">
               <Spinner show={loading} className={"mr-2"} />
-              <Button type="submit">Submit</Button>
+              <Button disabled={loading} type="submit">
+                Save
+              </Button>
             </div>
           </form>
         </Form>

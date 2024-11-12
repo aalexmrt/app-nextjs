@@ -1,26 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { getInvoicePdfUrl } from "@/services/strapi";
-import { Button } from "@/components/ui/button";
 
-export const ViewInvoice = () => {
-  console.log(open, "open");
-  // const [invoice, setInvoice] = useState({});
-  // useEffect(() => {
-  //   getInvoicePdfUrl(documentId).then((data) => {
-  //     setInvoice(data);
-  //   });
-  // }, [documentId]);
-  // console.log(invoice);
+export const ViewInvoice = ({ showViewInvoice, setShowViewInvoice }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>

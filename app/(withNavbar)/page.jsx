@@ -1,4 +1,5 @@
-import HeaderDashboard from "../ui/header-dashboard";
+"use client";
+
 import {
   Table,
   TableBody,
@@ -9,13 +10,9 @@ import {
 } from "@/components/ui/table";
 import { IoAdd } from "react-icons/io5";
 
-import {
-  deleteInvoice,
-  getInvoicesList,
-  getOrganization,
-} from "@/services/strapi";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { getInvoicesList, getOrganization } from "@/services/strapi";
+import { buttonVariants } from "@/components/ui/button";
+
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
@@ -28,15 +25,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { DeleteInvoice } from "./delete-invoice";
-import { ViewInvoice } from "./view-invoice";
 
-export default async function Page() {
-  const organization = await getOrganization();
-  const invoices = await getInvoicesList(organization.documentId);
+import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+export default function Page() {
+  const [organization, setOrganization] = useState({});
+  const [invoices, setInvoices] = useState([]);
+
+  useEffect(() => {
+    const getGlobalOrganization = async () => {
+      const response = await getOrganization();
+
+      setOrganization(response);
+    };
+    getGlobalOrganization();
+  }, []);
+
+  useEffect(() => {
+    const getInvoices = async () => {
+      const response = await getInvoicesList(organization.documentId);
+      setInvoices(response);
+    };
+    getInvoices();
+  }, [organization]);
 
   return (
     <>
-      <HeaderDashboard />
+      {/* <HeaderDashboard /> */}
       <div className="mt-8 mb-4 flex justify-end">
         <Link
           href="add-invoice"
@@ -59,7 +82,7 @@ export default async function Page() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices && invoices.data.length > 0 ? (
+              {invoices && invoices.data && invoices.data.length > 0 ? (
                 invoices.data.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">
@@ -69,28 +92,39 @@ export default async function Page() {
                     <TableCell>{item.customer?.name}</TableCell>
                     <TableCell className="text-right">$ {item.total}</TableCell>
                     <TableCell className="w-3 text-right flex gap-2 align-baseline">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <BsThreeDotsVertical className="h-full" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              console.log("View");
-                            }}
-                          >
-                            <ViewInvoice />
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Link href={`/edit-invoice/${item.documentId}`}>
-                              Edit
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <DeleteInvoice documentId={item.documentId} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Dialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <BsThreeDotsVertical className="h-full" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem>
+                              <DialogTrigger>View</DialogTrigger>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Link href={`/edit-invoice/${item.documentId}`}>
+                                Edit
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <DeleteInvoice documentId={item.documentId} />
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <DialogContent className="sm:max-w-[1400px] sm:max-h-[1000px] w-full h-full p-5">
+                          <DialogHeader>
+                            <DialogTitle></DialogTitle>
+                            <DialogDescription></DialogDescription>
+                          </DialogHeader>
+
+                          <iframe
+                            src={item.pdf?.url}
+                            width="100%"
+                            height="800px"
+                          ></iframe>
+                        </DialogContent>
+                      </Dialog>
                     </TableCell>
                   </TableRow>
                 ))
