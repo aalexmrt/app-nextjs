@@ -1,5 +1,7 @@
 "use server";
 import axios from "axios";
+import { exportPdfAPI } from "./export-pdf";
+import { FormData } from "formdata-node";
 
 const strapiAPI = axios.create({
   baseURL: process.env.STRAPI_URL,
@@ -17,10 +19,17 @@ const getOrganization = async () => {
 const getInvoice = async (id) => {
   console.log(id, "this is the id");
   const response = await strapiAPI.get(
-    `/invoices/${id}?populate[organization][populate]=*&populate[customer][populate]=*`
+    `/invoices/${id}?populate[organization][populate]=*&populate[customer][populate]=*&populate=pdf`
   );
+
   console.log(response, "this is the response");
   return response.data.data;
+};
+
+const deleteInvoice = async (id) => {
+  const response = await strapiAPI.delete(`/invoices/${id}`);
+
+  return response.data;
 };
 
 const updateInvoice = async (documentId, inputData) => {
@@ -36,7 +45,7 @@ const updateInvoice = async (documentId, inputData) => {
 
 const getInvoicesList = async (organizationDocumentId) => {
   const response = await strapiAPI.get(
-    `/invoices?populate=customer&populate=organization&filters[organization][documentId][$eq]=${organizationDocumentId}&sort=createdAt:desc`
+    `/invoices?populate=customer&populate=pdf&populate=organization&filters[organization][documentId][$eq]=${organizationDocumentId}&sort=createdAt:desc`
   );
   return response.data;
 };
@@ -49,8 +58,23 @@ const getLastOrganizationInvoiceService = async (organizationDocumentId) => {
   return invoice;
 };
 
+const generateInvoicePdf = async (invoiceId, invoiceDocumentId) => {
+  const pdfArrayBuffer = await exportPdfAPI(
+    `hidden-invoice/${invoiceDocumentId}`
+  );
+
+  const pdfBlob = new Blob([pdfArrayBuffer], { type: "application/pdf" });
+
+  const formData = new FormData();
+  formData.append("files", pdfBlob, "invoice.pdf");
+  formData.append("ref", "api::invoice.invoice");
+  formData.append("refId", invoiceId);
+  formData.append("field", "pdf");
+
+  await strapiAPI.post("/upload", formData);
+};
+
 const addInvoice = async (inputData) => {
-  console.log(inputData);
   const payload = {
     data: inputData,
   };
@@ -59,7 +83,7 @@ const addInvoice = async (inputData) => {
     headers: { "Content-Type": "application/json" },
   });
 
-  return response.data;
+  return response.data.data;
 };
 
 const getOrganizationCustomers = async (organizationDocumentId) => {
@@ -143,6 +167,13 @@ const createMockedAddressAndCustomersService = async (addresses, customers) => {
   }
 };
 
+const getInvoicePdfUrl = async (invoiceId) => {
+  const response = await strapiAPI.get(
+    `/invoices/${invoiceId}?populate[pdf]=true`
+  );
+  return response.data.data;
+};
+
 const addOrganization = async (inputData) => {
   const payload = {
     data: inputData,
@@ -206,4 +237,7 @@ export {
   createMockedAddressAndOrganizationService,
   updateOrganizationWithExistingCustomersService,
   getLastOrganizationInvoiceService,
+  generateInvoicePdf,
+  deleteInvoice,
+  getInvoicePdfUrl,
 };

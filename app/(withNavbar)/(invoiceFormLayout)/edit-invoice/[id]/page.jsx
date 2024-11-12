@@ -3,38 +3,15 @@ import { getInvoice } from "@/services/strapi";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { z } from "zod";
-import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import { updateInvoice } from "@/services/strapi";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+
+import { InvoiceForm } from "@/app/ui/invoice-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 const formSchema = z.object({
   identificationNumber: z.string().min(1, {
     message: "This is a required field",
@@ -60,11 +37,12 @@ const formSchema = z.object({
   number: z.number(),
 });
 
-function InvoiceForm({ invoice, organizationCustomers }) {
+function HandleInvoiceForm({ invoice, organizationCustomers }) {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
-    // resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       identificationNumber: invoice.identificationNumber,
       date: new Date(invoice.date),
@@ -99,9 +77,8 @@ function InvoiceForm({ invoice, organizationCustomers }) {
     values.total = total;
 
     try {
-      console.log(values);
+      setLoading(true);
       await updateInvoice(invoice.documentId, values);
-      console.log("updated");
       toast({
         description: "Invoice updated successfully.",
         variant: "success",
@@ -111,148 +88,152 @@ function InvoiceForm({ invoice, organizationCustomers }) {
         description: "An error occurred while updating the invoice.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex gap-8">
-          <FormField
-            control={form.control}
-            name="identificationNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Invoice Number</FormLabel>
-                <FormControl>
-                  <Input placeholder="INV-001" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <InvoiceForm
+      {...{ form, organizationCustomers, onSubmit, invoice, loading }}
+    />
+    // <Form {...form}>
+    //   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    //     <div className="flex gap-8">
+    //       <FormField
+    //         control={form.control}
+    //         name="identificationNumber"
+    //         render={({ field }) => (
+    //           <FormItem>
+    //             <FormLabel>Invoice Number</FormLabel>
+    //             <FormControl>
+    //               <Input placeholder="INV-001" {...field} />
+    //             </FormControl>
+    //             <FormMessage />
+    //           </FormItem>
+    //         )}
+    //       />
 
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "min-w-[240px] w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocussls
-                    />
-                  </PopoverContent>
-                </Popover>
+    //       <FormField
+    //         control={form.control}
+    //         name="date"
+    //         render={({ field }) => (
+    //           <FormItem>
+    //             <FormLabel>Date</FormLabel>
+    //             <Popover>
+    //               <PopoverTrigger asChild>
+    //                 <FormControl>
+    //                   <Button
+    //                     variant={"outline"}
+    //                     className={cn(
+    //                       "min-w-[240px] w-full pl-3 text-left font-normal",
+    //                       !field.value && "text-muted-foreground"
+    //                     )}
+    //                   >
+    //                     {field.value ? (
+    //                       format(field.value, "PPP")
+    //                     ) : (
+    //                       <span>Pick a date</span>
+    //                     )}
+    //                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+    //                   </Button>
+    //                 </FormControl>
+    //               </PopoverTrigger>
+    //               <PopoverContent className="w-auto p-0" align="start">
+    //                 <Calendar
+    //                   mode="single"
+    //                   selected={field.value}
+    //                   onSelect={field.onChange}
+    //                   disabled={(date) =>
+    //                     date > new Date() || date < new Date("1900-01-01")
+    //                   }
+    //                   initialFocussls
+    //                 />
+    //               </PopoverContent>
+    //             </Popover>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="customer"
-            render={({ field }) => (
-              <FormItem className="min-w-[280px]">
-                <FormLabel>Customer</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a customer" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {organizationCustomers &&
-                      organizationCustomers.length > 0 &&
-                      organizationCustomers.map((customer) => (
-                        <SelectItem
-                          value={customer.documentId}
-                          key={customer.documentId}
-                        >
-                          {customer.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+    //             <FormMessage />
+    //           </FormItem>
+    //         )}
+    //       />
+    //       <FormField
+    //         control={form.control}
+    //         name="customer"
+    //         render={({ field }) => (
+    //           <FormItem className="min-w-[280px]">
+    //             <FormLabel>Customer</FormLabel>
+    //             <Select onValueChange={field.onChange} value={field.value}>
+    //               <FormControl>
+    //                 <SelectTrigger>
+    //                   <SelectValue placeholder="Select a customer" />
+    //                 </SelectTrigger>
+    //               </FormControl>
+    //               <SelectContent>
+    //                 {organizationCustomers &&
+    //                   organizationCustomers.length > 0 &&
+    //                   organizationCustomers.map((customer) => (
+    //                     <SelectItem
+    //                       value={customer.documentId}
+    //                       key={customer.documentId}
+    //                     >
+    //                       {customer.name}
+    //                     </SelectItem>
+    //                   ))}
+    //               </SelectContent>
+    //             </Select>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+    //             <FormMessage />
+    //           </FormItem>
+    //         )}
+    //       />
+    //     </div>
 
-        <h3>Products</h3>
+    //     <h3>Products</h3>
 
-        {[...Array(invoice.products.length).keys()].map((index) => (
-          <div key={index} className="flex gap-4">
-            <FormField
-              control={form.control}
-              name={`products.${index}.name`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`products.${index}.quantity`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input type="number" placeholder="Quantity" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`products.${index}.price`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Price" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        ))}
+    //     {[...Array(invoice.products.length).keys()].map((index) => (
+    //       <div key={index} className="flex gap-4">
+    //         <FormField
+    //           control={form.control}
+    //           name={`products.${index}.name`}
+    //           render={({ field }) => (
+    //             <FormItem>
+    //               <FormControl>
+    //                 <Input placeholder="Name" {...field} />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <FormField
+    //           control={form.control}
+    //           name={`products.${index}.quantity`}
+    //           render={({ field }) => (
+    //             <FormItem>
+    //               <FormControl>
+    //                 <Input type="number" placeholder="Quantity" {...field} />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //         <FormField
+    //           control={form.control}
+    //           name={`products.${index}.price`}
+    //           render={({ field }) => (
+    //             <FormItem>
+    //               <FormControl>
+    //                 <Input placeholder="Price" {...field} />
+    //               </FormControl>
+    //               <FormMessage />
+    //             </FormItem>
+    //           )}
+    //         />
+    //       </div>
+    //     ))}
 
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    //     <Button type="submit">Submit</Button>
+    //   </form>
+    // </Form>
   );
 }
 
@@ -274,7 +255,7 @@ export default function Page() {
   }, [invoice]);
 
   return invoice && organizationCustomers && organizationCustomers.length ? (
-    <InvoiceForm {...{ invoice, organizationCustomers }} />
+    <HandleInvoiceForm {...{ invoice, organizationCustomers }} />
   ) : (
     <div>Loading...</div>
   );

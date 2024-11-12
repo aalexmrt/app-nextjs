@@ -13,7 +13,7 @@ import { LogOut } from "lucide-react";
 
 export default async function Layout({ children }) {
   const session = await getSession();
-  console.log(session);
+
   return (
     <>
       <div className="flex px-4 p-5 border-b mb-6 border-gray-200 items-center justify-between">
