@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import invoicesDataJson from "@/mocks/invoices.json";
-import addressesDataJson from "@/mocks/address.json";
-import customersDataJson from "@/mocks/customers.json";
-import organizationAddress from "@/mocks/organizationAddress.json";
-import organization from "@/mocks/organization.json";
+import invoicesDataJson from "@/app/mocks/invoices.json";
+import addressesDataJson from "@/app/mocks/address.json";
+import customersDataJson from "@/app/mocks/customers.json";
+import organizationAddress from "@/app/mocks/organizationAddress.json";
+import organization from "@/app/mocks/organization.json";
 
 import {
   createMockedAddressAndCustomersService,
@@ -18,19 +18,19 @@ import { useToast } from "@/hooks/use-toast";
 export default function Page() {
   const { toast } = useToast();
   const createMockedInvoices = async () => {
-    try{
+    try {
       await createMockedInvoicesService(invoicesDataJson);
       toast({
         description: "Invoices created successfully",
         variant: "success",
-      })
+      });
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   const createMockedAddressAndCustomers = async () => {
-    try{
+    try {
       await createMockedAddressAndCustomersService(
         addressesDataJson,
         customersDataJson
@@ -38,31 +38,30 @@ export default function Page() {
       toast({
         description: "Address and customers created successfully",
         variant: "success",
-      })
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
   const createMockedAddressAndOrganization = async () => {
-    try{
+    try {
       await createMockedAddressAndOrganizationService(
         organizationAddress,
         organization
       );
-
     } catch (error) {
       console.log(error);
     }
   };
 
   const updateOrganizationWithExistingCustomers = async () => {
-    try{
+    try {
       await updateOrganizationWithExistingCustomersService();
       toast({
         description: "Organization updated successfully",
         variant: "success",
-      })
+      });
     } catch (error) {
       console.log(error);
     }
