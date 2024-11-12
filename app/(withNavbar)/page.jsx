@@ -9,12 +9,26 @@ import {
 } from "@/components/ui/table";
 import { IoAdd } from "react-icons/io5";
 
-import { getInvoicesList, getOrganization } from "@/services/strapi";
-import { buttonVariants } from "@/components/ui/button";
-
+import {
+  deleteInvoice,
+  getInvoicesList,
+  getOrganization,
+} from "@/services/strapi";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { EditInvoiceButton, ExportPdfButton } from "../ui/button";
+
+import { BsThreeDotsVertical } from "react-icons/bs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { DeleteInvoice } from "./delete-invoice";
+import { ViewInvoice } from "./view-invoice";
 
 export default async function Page() {
   const organization = await getOrganization();
@@ -55,8 +69,28 @@ export default async function Page() {
                     <TableCell>{item.customer?.name}</TableCell>
                     <TableCell className="text-right">$ {item.total}</TableCell>
                     <TableCell className="w-3 text-right flex gap-2 align-baseline">
-                      <ExportPdfButton documentId={item.documentId} />
-                      <EditInvoiceButton documentId={item.documentId} />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <BsThreeDotsVertical className="h-full" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem
+                            onSelect={() => {
+                              console.log("View");
+                            }}
+                          >
+                            <ViewInvoice />
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Link href={`/edit-invoice/${item.documentId}`}>
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <DeleteInvoice documentId={item.documentId} />
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))
