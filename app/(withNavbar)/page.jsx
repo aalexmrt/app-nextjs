@@ -1,11 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 import { IoAdd } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import { getInvoicesList, getOrganization } from "@/services/strapi";
+import {
+  getInvoicesList,
+  getOrganization,
+  sendInvoiceEmail,
+} from "@/services/strapi";
 
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -40,6 +44,46 @@ export default function Page() {
   const [invoices, setInvoices] = useState([]);
   const [selectedInvoices, setSelectedInvoices] = useState([]);
 
+  const prepareInvoicesForEmail = useCallback(() => {
+    const invoicesForEmail = invoices.data
+      .filter((invoice) => selectedInvoices.includes(invoice.documentId))
+      .map((invoice) => ({
+        identificationNumber: invoice.identificationNumber,
+        documentId: invoice.documentId,
+        customerDocumentId: invoice.customer.documentId,
+        customerEmail: invoice.customer.email,
+        organizationName: invoice.organization.name,
+        pdf: invoice.pdf.url,
+      }));
+
+    invoicesForEmail.sort((a, b) =>
+      a.customerDocumentId.localeCompare(b.customerDocumentId)
+    );
+
+    let emailStageArea = [];
+    let invoicesPdfList = [];
+    let currentCustomer = "";
+    for (let i = 0; i < invoicesForEmail.length; i++) {
+      currentCustomer = invoicesForEmail[i].customerDocumentId;
+      emailStageArea.push(invoicesForEmail[i]);
+
+      invoicesPdfList.push({
+        filename: `${invoicesForEmail[i].identificationNumber}.pdf`,
+        contentUrl: invoicesForEmail[i].pdf,
+      });
+
+      if (currentCustomer !== invoicesForEmail[i + 1]?.customerDocumentId) {
+        // send emails from stage area
+
+        sendInvoiceEmail(invoicesForEmail[i], invoicesPdfList);
+
+        // reset stage area
+        emailStageArea = [];
+        invoicesPdfList = [];
+      }
+    }
+  }, [invoices.data, selectedInvoices]);
+
   const handleCheckboxChange = (documentId) => {
     setSelectedInvoices((prevSelected) =>
       prevSelected.includes(documentId)
@@ -67,10 +111,12 @@ export default function Page() {
 
   return (
     <>
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <div className="mt-8 mb-4 gap-3 flex justify-end">
           {selectedInvoices && selectedInvoices.length > 0 && (
-            <Button type="submit">Send</Button>
+            <Button type="submit" onClick={prepareInvoicesForEmail}>
+              Send
+            </Button>
           )}
           <Link
             href="add-invoice"

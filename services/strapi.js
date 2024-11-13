@@ -16,13 +16,32 @@ const getOrganization = async () => {
   return organization;
 };
 
+const sendInvoiceEmail = async (invoice, invoicesPdfList) => {
+  const from = invoice.organizationName;
+
+  const to = invoice.customerEmail;
+  const subject = `${invoice.organizationName} - Invoice`;
+
+  const text = `Hi,\nI trust this email finds you well.\nPlease find attached the latest invoice/s from ${invoice.organizationName}.\n\nRegards,\n${invoice.organizationName}`;
+  const html = `<p>Hi,</p><p>I trust this email finds you well.</p><p>Please find attached the latest invoice/s from ${invoice.organizationName}.</p><p>Regards,<br>${invoice.organizationName}</p>`;
+
+  await axios.post(`${process.env.BACKEND_EXPRESS_URL}/send-email`, {
+    body: {
+      from,
+      to,
+      subject,
+      text,
+      html,
+      attachments: invoicesPdfList,
+    },
+  });
+};
+
 const getInvoice = async (id) => {
-  console.log(id, "this is the id");
   const response = await strapiAPI.get(
     `/invoices/${id}?populate[organization][populate]=*&populate[customer][populate]=*&populate=pdf`
   );
 
-  console.log(response, "this is the response");
   return response.data.data;
 };
 
@@ -240,4 +259,5 @@ export {
   generateInvoicePdf,
   deleteInvoice,
   getInvoicePdfUrl,
+  sendInvoiceEmail,
 };
