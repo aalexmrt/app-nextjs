@@ -37,7 +37,7 @@ export const InvoiceForm = ({
   loading,
 }) => {
   return (
-    <Card>
+    <Card className="mt-10">
       <CardHeader>
         <h1 className="text-xl font-bold">Details</h1>
       </CardHeader>

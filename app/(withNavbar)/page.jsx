@@ -2,26 +2,9 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { IoAdd } from "react-icons/io5";
+import axios from "axios";
+
 import { BsThreeDotsVertical } from "react-icons/bs";
-
-import {
-  getInvoicesList,
-  getOrganization,
-  sendInvoiceEmail,
-} from "@/services/strapi";
-
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -36,21 +19,100 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { DeleteInvoice } from "./delete-invoice";
+
+import {
+  getInvoicesList,
+  getOrganization,
+  sendInvoiceEmail,
+} from "@/services/strapi";
+
+import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+} from "@/components/ui/command";
+import { Button, buttonVariants } from "@/components/ui/button";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogDescription,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+
+// import { DeleteInvoice } from "./delete-invoice";
+
+// import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/hooks/use-toast";
+import { Form } from "react-hook-form";
+import { FormControl } from "@/components/ui/form";
+import useSWR, { mutate } from "swr";
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip";
+// import { CardHeader } from "@mui/material";
 
 export default function Page() {
   const [organization, setOrganization] = useState({});
-  const [invoices, setInvoices] = useState([]);
+  const [loadingSendEmail, setLoadingSendEmail] = useState(false);
+
   const [selectedInvoices, setSelectedInvoices] = useState([]);
 
-  const prepareInvoicesForEmail = useCallback(() => {
-    const invoicesForEmail = invoices.data
+  const { data, isLoading, error } = useSWR(
+    "globalOrganization",
+    getOrganization
+  );
+  const organizationDocumentId = data?.documentId;
+  console.log(organizationDocumentId);
+
+  const {
+    data: invoicesData,
+    isLoading: invoicesLoading,
+    error: invoicesError,
+  } = useSWR([organizationDocumentId, "/api/invoices"], () =>
+    getInvoicesList(organizationDocumentId)
+  );
+
+  const invoices = invoicesData?.data;
+
+  const { toast } = useToast();
+
+  const handleMutation = () => {
+    mutate([organizationDocumentId, "/api/invoices"]);
+  };
+
+  const prepareInvoicesForEmail = useCallback(async () => {
+    const invoicesForEmail = invoices
       .filter((invoice) => selectedInvoices.includes(invoice.documentId))
       .map((invoice) => ({
         identificationNumber: invoice.identificationNumber,
         documentId: invoice.documentId,
         customerDocumentId: invoice.customer.documentId,
+        customerName: invoice.customer.name,
         customerEmail: invoice.customer.email,
         organizationName: invoice.organization.name,
         pdf: invoice.pdf.url,
@@ -73,18 +135,36 @@ export default function Page() {
       });
 
       if (currentCustomer !== invoicesForEmail[i + 1]?.customerDocumentId) {
-        // send emails from stage area
-
-        sendInvoiceEmail(invoicesForEmail[i], invoicesPdfList);
-
+        try {
+          setLoadingSendEmail(true);
+          await sendInvoiceEmail(invoicesForEmail[i], invoicesPdfList);
+          toast({
+            description: `Email sent to ${invoicesForEmail[i].customerName}`,
+            variant: "success",
+          });
+        } catch (error) {
+          toast({
+            description: `An error occurred while sending the email to ${invoicesForEmail[i].customerName}`,
+            variant: "destructive",
+          });
+        } finally {
+          setLoadingSendEmail(false);
+          setSelectedInvoices([]);
+        }
         // reset stage area
         emailStageArea = [];
         invoicesPdfList = [];
       }
     }
-  }, [invoices.data, selectedInvoices]);
+  }, [invoices, selectedInvoices, setLoadingSendEmail, toast]);
 
   const handleCheckboxChange = (documentId) => {
+    if (documentId === "select-all") {
+      setSelectedInvoices((prevSelected) =>
+        invoices.map((invoice) => prevSelected.includes(invoice.documentId))
+      );
+      return;
+    }
     setSelectedInvoices((prevSelected) =>
       prevSelected.includes(documentId)
         ? prevSelected.filter((id) => id !== documentId)
@@ -92,133 +172,160 @@ export default function Page() {
     );
   };
 
-  useEffect(() => {
-    const getGlobalOrganization = async () => {
-      const response = await getOrganization();
-
-      setOrganization(response);
-    };
-    getGlobalOrganization();
-  }, []);
-
-  useEffect(() => {
-    const getInvoices = async () => {
-      const response = await getInvoicesList(organization.documentId);
-      setInvoices(response);
-    };
-    getInvoices();
-  }, [organization]);
-
+  const selectAll = () => {
+    if (selectedInvoices.length === invoices.length) {
+      setSelectedInvoices([]);
+      return;
+    }
+    setSelectedInvoices(invoices.map((invoice) => invoice.documentId));
+  };
+  console.log(invoices);
   return (
-    <>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <div className="mt-8 mb-4 gap-3 flex justify-end">
-          {selectedInvoices && selectedInvoices.length > 0 && (
-            <Button type="submit" onClick={prepareInvoicesForEmail}>
+    <div className="flex flex-col items-center w-[800px] gap-4">
+      <Card className="w-full">
+        <CardHeader></CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <Command>
+              <CommandInput placeholder="Search..." />
+              <CommandList>
+                {/* <CommandEmpty>No results found.</CommandEmpty> */}
+                {/* <CommandGroup heading="Suggestions">
+                  <CommandItem>Calendar</CommandItem>
+                  <CommandItem>Search Emoji</CommandItem>
+                  <CommandItem>Calculator</CommandItem>
+                </CommandGroup>
+                <CommandSeparator />
+                <CommandGroup heading="Settings">
+                  <CommandItem>Profile</CommandItem>
+                  <CommandItem>Billing</CommandItem>
+                  <CommandItem>Settings</CommandItem>
+                </CommandGroup> */}
+              </CommandList>
+            </Command>
+            <Link
+              href="/add-invoice"
+              className={buttonVariants({ variant: "outline" })}
+            >
+              Add Invoice
+            </Link>
+
+            <Button
+              disabled={selectedInvoices && selectedInvoices.length === 0}
+            >
               Send
             </Button>
-          )}
-          <Link
-            href="add-invoice"
-            className={buttonVariants({ variant: "outline" })}
-          >
-            <IoAdd className="mr-2 " />
-            Add Invoice
-          </Link>
-        </div>
-        <Card>
-          <CardContent className="p-0">
-            <Table className="px-4">
-              <TableHeader className="bg-gray-50 px-4">
-                <TableRow>
-                  <TableHead></TableHead>
-                  <TableHead className="w-[200px] font-bold">Invoice</TableHead>
-                  <TableHead className="font-bold text-center">Date</TableHead>
-                  <TableHead className="font-bold text-center">
-                    Customer
-                  </TableHead>
-                  <TableHead className="font-bold text-right">Amount</TableHead>
-                  <TableHead></TableHead>
-                </TableRow>
-              </TableHeader>
 
-              <TableBody>
-                {invoices && invoices.data && invoices.data.length > 0 ? (
-                  invoices.data.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        <Checkbox
-                          name={item.documentId}
-                          value={item.documentId}
-                          checked={selectedInvoices.includes(item.documentId)}
-                          onCheckedChange={() =>
-                            handleCheckboxChange(item.documentId)
-                          }
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {item.identificationNumber}
-                      </TableCell>
-                      <TableCell className="text-center">{item.date}</TableCell>
-                      <TableCell className="text-center">
-                        {item.customer?.name}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        $ {item.total}
-                      </TableCell>
-                      <TableCell className="w-2 pt-5 gap-2 align-middle">
-                        <div>
-                          <Dialog>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger>
-                                <BsThreeDotsVertical className="h-full" />
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <DropdownMenuItem>
-                                  <DialogTrigger>View</DialogTrigger>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Link
-                                    href={`/edit-invoice/${item.documentId}`}
-                                  >
-                                    Edit
-                                  </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <DeleteInvoice documentId={item.documentId} />
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+            {/* <div>Add customer</div>
+            <div>Refresh (future)</div> */}
+          </div>
+        </CardContent>
+      </Card>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Card className="mt-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="">
+                  {invoices && invoices.length > 0 && (
+                    <Checkbox
+                      name="select-all"
+                      value={selectedInvoices.length === invoices.length}
+                      checked={selectedInvoices.length === invoices.length}
+                      onCheckedChange={selectAll}
+                      aria-label="Select all"
+                    />
+                  )}
+                </TableHead>
+                <TableHead className="w-[200px] font-bold">Invoice</TableHead>
+                <TableHead className="w-[200px] font-bold">Date</TableHead>
+                <TableHead className="w-[200px] font-bold">Customer</TableHead>
+                <TableHead className="w-[200px] font-bold">Amount</TableHead>
+                <TableHead className=" font-bold"></TableHead>
+              </TableRow>
+            </TableHeader>
+          </Table>
+        </Card>
 
-                            <DialogContent className="sm:max-w-[1400px] sm:max-h-[1000px] w-full h-full p-5">
-                              <DialogHeader>
-                                <DialogTitle></DialogTitle>
-                                <DialogDescription></DialogDescription>
-                              </DialogHeader>
+        <Card className="mt-4">
+          <Table>
+            <TableBody>
+              {invoices && invoices && invoices.length > 0 ? (
+                invoices.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="">
+                      <Checkbox
+                        name={item.documentId}
+                        value={item.documentId}
+                        checked={selectedInvoices.includes(item.documentId)}
+                        onCheckedChange={() =>
+                          handleCheckboxChange(item.documentId)
+                        }
+                        aria-label="Select row"
+                      />
+                    </TableCell>
+                    <TableCell className="w-[200px]">
+                      {item.identificationNumber}
+                    </TableCell>
+                    <TableCell className="w-[200px]">{item.date}</TableCell>
+                    <TableCell className="w-[200px]">
+                      {item.customer?.name}
+                    </TableCell>
+                    <TableCell className="w-[200px]">$ {item.total}</TableCell>
 
-                              <iframe
-                                src={item.pdf?.url}
-                                width="100%"
-                                height="800px"
-                              ></iframe>
-                            </DialogContent>
-                          </Dialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan="5" className="font-medium text-center">
-                      No invoices found
+                    <TableCell className="">
+                      <div>
+                        <Dialog>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger>
+                              <BsThreeDotsVertical />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem>
+                                <DialogTrigger>View</DialogTrigger>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Link href={`/edit-invoice/${item.documentId}`}>
+                                  Edit
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <DeleteInvoice
+                                  documentId={item.documentId}
+                                  handleMutation={handleMutation}
+                                />
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+
+                          <DialogContent className="sm:max-w-[1400px] sm:max-h-[1000px] w-full h-full p-5">
+                            <DialogHeader>
+                              <DialogTitle></DialogTitle>
+                              <DialogDescription></DialogDescription>
+                            </DialogHeader>
+
+                            <iframe
+                              src={item.pdf?.url}
+                              width="100%"
+                              height="800px"
+                            ></iframe>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
                     </TableCell>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan="5" className="font-medium ">
+                    No invoices found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </Card>
       </form>
-    </>
+    </div>
   );
 }

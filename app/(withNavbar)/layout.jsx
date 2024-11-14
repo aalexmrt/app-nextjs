@@ -16,10 +16,11 @@ export default async function Layout({ children }) {
 
   return (
     <>
-      <div className="flex px-4 p-5 border-b mb-6 border-gray-200 items-center justify-between">
+      <div className="flex p-4 items-center justify-between">
         <Link href="/">
           <h5 className="text-xl font-bold">Invoices</h5>
         </Link>
+
         <div className="flex gap-4 align-center position-relative">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -32,7 +33,6 @@ export default async function Layout({ children }) {
               <a href="/api/auth/logout">
                 <DropdownMenuItem>
                   <LogOut className="mr-2" />
-
                   <span>Logout</span>
                 </DropdownMenuItem>
               </a>
@@ -40,7 +40,7 @@ export default async function Layout({ children }) {
           </DropdownMenu>
         </div>
       </div>
-      <div className="px-20 pb-20">{children}</div>
+      <div className="flex justify-center px-20 pb-10">{children}</div>
     </>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
 import { deleteInvoice } from "@/services/strapi";
-export const DeleteInvoice = ({ documentId }) => {
+export const DeleteInvoice = ({ documentId, handleMutation }) => {
   const _deleteInvoice = async (documentId) => {
     try {
       await deleteInvoice(documentId);
+      handleMutation();
       // toast({
       //   description: "Invoice deleted successfully",
       //   variant: "success",
