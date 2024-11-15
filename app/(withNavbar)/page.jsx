@@ -183,11 +183,10 @@ export default function Page() {
   return (
     <div className="flex flex-col items-center w-[800px] gap-4">
       <Card className="w-full">
-        <CardHeader></CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="flex gap-4">
             <Command>
-              <CommandInput placeholder="Search..." />
+              {/* <CommandInput placeholder="Search..." /> */}
               <CommandList>
                 {/* <CommandEmpty>No results found.</CommandEmpty> */}
                 {/* <CommandGroup heading="Suggestions">
@@ -211,7 +210,11 @@ export default function Page() {
             </Link>
 
             <Button
-              disabled={selectedInvoices && selectedInvoices.length === 0}
+              disabled={
+                (selectedInvoices && selectedInvoices.length === 0) ||
+                loadingSendEmail
+              }
+              onClick={prepareInvoicesForEmail}
             >
               Send
             </Button>

@@ -1,5 +1,5 @@
 "use client";
-import { getInvoice } from "@/services/strapi";
+import { generateInvoicePdf, getInvoice } from "@/services/strapi";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -79,6 +79,7 @@ function HandleInvoiceForm({ invoice, organizationCustomers }) {
     try {
       setLoading(true);
       await updateInvoice(invoice.documentId, values);
+      await generateInvoicePdf(invoice.id, invoice.documentId);
       toast({
         description: "Invoice updated successfully.",
         variant: "success",

@@ -129,7 +129,10 @@ export default function Page() {
       const response = await getLastOrganizationInvoiceService(
         organization.documentId
       );
-      setLastInvoice(response);
+
+      // When there is no invoice yet in the organization, the response is undefined
+      // So we set the default value to { number: 0 }
+      setLastInvoice(response === undefined ? { number: 0 } : response);
     };
     getLastOrganizationInvoice();
   }, [organization]);
@@ -144,6 +147,7 @@ export default function Page() {
   const isOrganizationReady = !!organization;
   const isCustomersReady =
     !!organizationCustomers && organizationCustomers.length;
+
   const nextInvoiceNumber =
     isLastInvoiceReady && Number(lastInvoice.number) + 1;
 

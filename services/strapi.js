@@ -74,6 +74,7 @@ const getLastOrganizationInvoiceService = async (organizationDocumentId) => {
   const response = await strapiAPI.get(
     `/invoices?populate[organization]=true&filters[organization][documentId][$eq]=${organizationDocumentId}&sort=createdAt:desc`
   );
+  console.log(response.data.data);
   const [invoice] = response.data.data;
   return invoice;
 };
@@ -137,8 +138,6 @@ const createMockedInvoicesService = async (invoices) => {
   const [organization] = organizationData.data.data;
   const customersListData = await strapiAPI.get("/customers");
   const customersList = customersListData.data.data;
-
-  console.log(organization);
 
   for (const invoice of invoices) {
     invoice.organization = organization.documentId;
